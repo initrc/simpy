@@ -1,4 +1,4 @@
-docsim-python
+simpy
 =============
 
 Document similarity comparison in Python
