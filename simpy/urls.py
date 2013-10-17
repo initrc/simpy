@@ -5,6 +5,7 @@ from django.conf.urls import patterns, include, url
 # admin.autodiscover()
 
 urlpatterns = patterns('',
+    url(r'^$', include('simpyapp.urls'))
     # Examples:
     # url(r'^$', 'simpy.views.home', name='home'),
     # url(r'^simpy/', include('simpy.foo.urls')),
