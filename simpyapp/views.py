@@ -7,7 +7,6 @@ def index(request):
 
 @csrf_exempt
 def compare(request):
-    print("compare")
     doc1 = request.POST.get('doc1')
     doc2 = request.POST.get('doc2')
     return HttpResponse(doc1 + doc2)

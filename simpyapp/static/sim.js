@@ -1,18 +1,17 @@
 $(document).ready(function() {
   init();
+  $.ajaxSetup({
+    crossDomain: false, // obviates need for sameOrigin test
+    beforeSend: function(xhr, settings) {
+      if (!csrfSafeMethod(settings.type)) {
+        xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+      }
+    }
+  });
 });
 
 function init() {
   $('#compare').click(function() {
-    $.ajaxSetup({
-      crossDomain: false, // obviates need for sameOrigin test
-      beforeSend: function(xhr, settings) {
-        if (!csrfSafeMethod(settings.type)) {
-          var csrftoken = getCookie('csrftoken');
-          xhr.setRequestHeader("X-CSRFToken", csrftoken);
-        }
-      }
-    });
     $.ajax({
       url: '/compare/',
       type: 'post',
@@ -23,9 +22,6 @@ function init() {
       success: function(data){
         $('#result').html(data);
       },
-      error: function(){
-        alert('Ajax Error');
-      }
     });
   });
 }
@@ -43,12 +39,10 @@ function getCookie(name) {
       }
     }
   }
-  return cookie;
+  return cookieValue;
 }
 
 function csrfSafeMethod(method) {
   // these HTTP methods do not require CSRF protection
   return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
 }
-
-
