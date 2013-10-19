@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, include, url
 
-urlpatterns = patterns('',
+urlpatterns = patterns('simpyapp.views',
     # Examples:
-    url(r'^$', 'simpyapp.views.index', name='index')
+    url(r'^$', 'index'),
+    url(r'^compare/$', 'compare'),
 )
