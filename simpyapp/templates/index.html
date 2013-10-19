@@ -1,8 +1,14 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
   <head>
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    {% load staticfiles %}
+    <script src="{% static "sim.js" %}"></script>
   </head>
   <body>
-    Welcome to simpy!
+    <textarea id="doc1">Enter text ...</textarea>
+    <textarea id="doc2">Enter text ...</textarea>
+    <button type="submit" id="compare">Compare</button>
+    <div id="result"></div>
   </body>
 </html>
