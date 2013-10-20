@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render
+from simpyapp.algorithm.sim import Sim
 
 def index(request):
     return render(request, 'index.html')
@@ -7,4 +8,10 @@ def index(request):
 def compare(request):
     doc1 = request.POST.get('doc1')
     doc2 = request.POST.get('doc2')
-    return HttpResponse(doc1 + doc2)
+    sim = Sim()
+    v = sim.compare(doc1, doc2)
+    if v == -1:
+        s = 'Too simple'
+    else:
+        s = '%0.2f' % (v * 100) + '%'
+    return HttpResponse(s)
