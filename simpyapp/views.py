@@ -13,5 +13,5 @@ def compare(request):
     if v == -1:
         s = 'Too simple'
     else:
-        s = '%0.2f' % (v * 100) + '%'
+        s = '{:.2f}%'.format(v * 100)
     return HttpResponse(s)
