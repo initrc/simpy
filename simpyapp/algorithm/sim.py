@@ -1,6 +1,9 @@
+#!/usr/bin/env python
+
 import os
 import re
 import sys
+import time
 import porter
 from numpy import zeros, dot
 from numpy.linalg import norm
@@ -74,11 +77,9 @@ class Sim:
 if __name__ == '__main__':
     print "Calculating similarity..."
     sim = Sim()
+    start = time.time()
     doc1 = sim.read_doc_from_file(sys.argv[1])
-    doc1 = sim.read_doc_from_file(sys.argv[2])
-
-    #doc1="I like to eat chicken\nnoodle soup."
-    #doc2="I have read the book \"Chicken noodle soup for the soul\"."
-
-    print "Doc1: %s\n\nDoc2: %s\n" % (doc1, doc2)
-    print "Similarity = %s" % sim.compare(doc1, doc2)
+    doc2 = sim.read_doc_from_file(sys.argv[2])
+    similarity = sim.compare(doc1, doc2)
+    end = time.time()
+    print "Similarity = %s\n%fs" % (similarity, end - start)
