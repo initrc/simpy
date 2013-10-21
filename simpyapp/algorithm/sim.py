@@ -15,47 +15,34 @@ class Sim:
     splitter = re.compile("[a-z\-']+", re.I)
     stemmer = porter.PorterStemmer()
 
-    def add_word_count(self, word, word_count_dict):
-        """Filter stop words, stem the word and add to word_count_dict"""
-        w = word.lower()
-        if w not in self.stop_words:
-            w = self.stemmer.stem(w, 0, len(w) - 1)
-            word_count_dict.setdefault(w, 0)
-            # count not needed but kept for the future
-            word_count_dict[w] += 1
+    def build_word_dict(self, doc1, doc2):
+        """Return a dict that maps filtered and stemmed word to id"""
+        word_dict = dict()
+        id = 0
+        for doc in [doc1, doc2]:
+            for w in self.splitter.findall(doc):
+                w = w.lower()
+                if w not in self.stop_words:
+                    w = self.stemmer.stem(w, 0, len(w) - 1)
+                    if w not in word_dict:
+                        word_dict[w] = id
+                        id += 1
+        return word_dict
 
     def build_vector(self, doc, word_dict):
         """Return a word vector of the doc"""
         v = zeros(len(word_dict))
         for w in self.splitter.findall(doc):
             w = w.lower()
-            # word_data = (index, count)
-            word_data = word_dict.get(self.stemmer.stem(
-                w, 0, len(w) - 1), None)
-            if word_data:
-                v[word_data[0]] = 1
+            w = self.stemmer.stem(w, 0, len(w) - 1)
+            if w in word_dict:
+                v[word_dict[w]] = 1
         return v
 
     def compare(self, doc1, doc2):
         """Return doc similarity in float or -1 if N/A"""
-        # word => count
-        word_count_dict = dict()
-        for doc in [doc1, doc2]:
-            for w in self.splitter.findall(doc):
-                self.add_word_count(w, word_count_dict)
-
-        # sorted word => (index, count)
-        word_dict = dict()
-        words = word_count_dict.keys()
-        words.sort()
-        # TODO test range vs xrange
-        for i in range(len(words)):
-            word_dict[words[i]] = (i, word_count_dict[words[i]])
-
-        # Keep word_dict in memory and delete the rest
-        del words
-        del word_count_dict
-
+        # build word_dict: word => id
+        word_dict = self.build_word_dict(doc1, doc2)
         # build and normalize word vectors
         v1 = self.build_vector(doc1, word_dict)
         v2 = self.build_vector(doc2, word_dict)
