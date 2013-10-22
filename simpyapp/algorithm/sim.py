@@ -7,6 +7,7 @@ import time
 import porter
 from numpy import zeros, dot
 from numpy.linalg import norm
+from sets import Set
 
 
 class Sim:
@@ -15,43 +16,43 @@ class Sim:
     splitter = re.compile("[a-z\-']+", re.I)
     stemmer = porter.PorterStemmer()
 
-    def build_word_dict(self, doc1, doc2):
+    def build_word_dict(self, docs, word_sets):
         """Return a dict that maps filtered and stemmed word to id"""
         word_dict = dict()
         id = 0
-        for doc in [doc1, doc2]:
-            for w in self.splitter.findall(doc):
+        for i in xrange(len(docs)):
+            for w in self.splitter.findall(docs[i]):
                 w = w.lower()
                 if w not in self.stop_words:
                     w = self.stemmer.stem(w, 0, len(w) - 1)
                     if w not in word_dict:
                         word_dict[w] = id
                         id += 1
+                    if w not in word_sets[i]:
+                        word_sets[i].add(w)
         return word_dict
 
-    def build_vector(self, doc, word_dict):
+    def build_vector(self, doc, word_dict, word_set):
         """Return a word vector of the doc"""
         v = zeros(len(word_dict))
-        for w in self.splitter.findall(doc):
-            w = w.lower()
-            w = self.stemmer.stem(w, 0, len(w) - 1)
-            if w in word_dict:
-                v[word_dict[w]] = 1
+        for w in word_set:
+            v[word_dict[w]] = 1
         return v
 
-    def compare(self, doc1, doc2):
+    def compare(self, docs):
         """Return doc similarity in float or -1 if N/A"""
         # build word_dict: word => id
-        word_dict = self.build_word_dict(doc1, doc2)
+        word_sets = [Set(), Set()]
+        word_dict = self.build_word_dict(docs, word_sets)
         # build and normalize word vectors
-        v1 = self.build_vector(doc1, word_dict)
-        v2 = self.build_vector(doc2, word_dict)
-        norm1 = norm(v1)
-        norm2 = norm(v2)
-        if (norm1 == 0 or norm2 == 0):
+        vecs, norms = [None, None], [None, None]
+        for i in xrange(len(docs)):
+            vecs[i] = self.build_vector(docs[i], word_dict, word_sets[i])
+            norms[i] = norm(vecs[i])
+        if (norms[0] == 0 or norms[1] == 0):
             return -1
         else:
-            return float(dot(v1, v2) / (norm(v1) * norm(v2)))
+            return float(dot(vecs[0], vecs[1]) / (norms[0] * norms[1]))
 
     def read_doc_from_file(self, file):
         """Return doc read from file"""
@@ -65,8 +66,8 @@ if __name__ == '__main__':
     print "Calculating similarity..."
     sim = Sim()
     start = time.time()
-    doc1 = sim.read_doc_from_file(sys.argv[1])
-    doc2 = sim.read_doc_from_file(sys.argv[2])
-    similarity = sim.compare(doc1, doc2)
+    docs = [sim.read_doc_from_file(sys.argv[1]),
+            sim.read_doc_from_file(sys.argv[2])]
+    similarity = sim.compare(docs)
     end = time.time()
     print "Similarity = %s\n%fs" % (similarity, end - start)
