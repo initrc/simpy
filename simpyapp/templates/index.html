@@ -4,12 +4,12 @@
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     {% load staticfiles %}
     {% csrf_token %}
-    <script src="{% static "sim.js" %}"></script>
+    <script src="{% static 'sim.js' %}"></script>
   </head>
   <body>
     <textarea id="doc1">Enter text ...</textarea>
     <textarea id="doc2">Enter text ...</textarea>
-    <button type="submit" id="compare">Compare</button>
+    <button id="compare" type="button">Compare</button>
     <div id="result"></div>
   </body>
 </html>
