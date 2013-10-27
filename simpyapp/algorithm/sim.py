@@ -41,6 +41,8 @@ class Sim:
 
     def compare(self, docs):
         """Return doc similarity in float or -1 if N/A"""
+        # support only 2 docs
+        assert len(docs) == 2
         # build word_dict: word => id
         word_sets = [Set(), Set()]
         word_dict = self.build_word_dict(docs, word_sets)
