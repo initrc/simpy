@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-from simpyapp.algorithm.sim import Sim
+from simpyapp.src.sim import Sim
 
 
 def index(request):

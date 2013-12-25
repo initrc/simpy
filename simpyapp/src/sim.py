@@ -65,8 +65,7 @@ class Sim:
 
 if __name__ == '__main__':
     """
-    python -m algorithm.sim algorithm/text_hamlet.txt
-    algorithm/text_othello.txt
+    python -m src.sim src/text_hamlet.txt src/text_othello.txt
     """
     print("Calculating similarity...")
     sim = Sim()
