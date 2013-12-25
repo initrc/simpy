@@ -7,7 +7,6 @@ import time
 import porter
 from numpy import zeros, dot
 from numpy.linalg import norm
-from sets import Set
 
 
 class Sim:
@@ -18,9 +17,9 @@ class Sim:
 
     def build_word_dict(self, docs, word_sets):
         """Return a dict that maps filtered and stemmed word to id"""
-        word_dict = dict()
+        word_dict = {}
         id = 0
-        for i in xrange(len(docs)):
+        for i in range(len(docs)):
             for w in self.splitter.findall(docs[i]):
                 w = w.lower()
                 if w not in self.stop_words:
@@ -44,32 +43,32 @@ class Sim:
         # support only 2 docs
         assert len(docs) == 2
         # build word_dict: word => id
-        word_sets = [Set(), Set()]
+        word_sets = [set(), set()]
         word_dict = self.build_word_dict(docs, word_sets)
         # build and normalize word vectors
         vecs, norms = [None, None], [None, None]
-        for i in xrange(len(docs)):
+        for i in range(len(docs)):
             vecs[i] = self.build_vector(docs[i], word_dict, word_sets[i])
             norms[i] = norm(vecs[i])
         if (norms[0] == 0 or norms[1] == 0):
             return -1
         else:
-            return float(dot(vecs[0], vecs[1]) / (norms[0] * norms[1]))
+            return dot(vecs[0], vecs[1]) / (norms[0] * norms[1])
 
     def read_doc_from_file(self, file):
         """Return doc read from file"""
         try:
             doc = open(file, 'r').read()
         except:
-            print "Error could not open file"
+            print("Error could not open file")
         return doc
 
 if __name__ == '__main__':
-    print "Calculating similarity..."
+    print("Calculating similarity...")
     sim = Sim()
     start = time.time()
     docs = [sim.read_doc_from_file(sys.argv[1]),
             sim.read_doc_from_file(sys.argv[2])]
     similarity = sim.compare(docs)
     end = time.time()
-    print "Similarity = %s\n%fs" % (similarity, end - start)
+    print("Similarity = %s\n%fs" % (similarity, end - start))

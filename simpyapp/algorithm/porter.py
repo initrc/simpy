@@ -439,5 +439,5 @@ if __name__ == '__main__':
                             output += p.stem(word, 0, len(word)-1)
                             word = ''
                         output += c.lower()
-                print output,
+                print(output, end=' ')
             infile.close()
