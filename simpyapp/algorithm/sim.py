@@ -4,7 +4,7 @@ import os
 import re
 import sys
 import time
-import porter
+from .porter import PorterStemmer
 from numpy import zeros, dot
 from numpy.linalg import norm
 
@@ -13,7 +13,7 @@ class Sim:
     file = os.path.join(os.path.dirname(__file__), 'english.stop')
     stop_words = [w.strip() for w in open(file, 'r').readlines()]
     splitter = re.compile("[a-z\-']+", re.I)
-    stemmer = porter.PorterStemmer()
+    stemmer = PorterStemmer()
 
     def build_word_dict(self, docs, word_sets):
         """Return a dict that maps filtered and stemmed word to id"""
@@ -64,6 +64,10 @@ class Sim:
         return doc
 
 if __name__ == '__main__':
+    """
+    python -m algorithm.sim algorithm/text_hamlet.txt
+    algorithm/text_othello.txt
+    """
     print("Calculating similarity...")
     sim = Sim()
     start = time.time()
